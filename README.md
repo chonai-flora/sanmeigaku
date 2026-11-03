@@ -1,5 +1,12 @@
 # sanmeigaku
 
+[![npm experimental](https://img.shields.io/npm/v/sanmeigaku/experimental?style=flat-square&logo=npm)](https://www.npmjs.com/package/sanmeigaku)
+[![license](https://img.shields.io/npm/l/sanmeigaku?style=flat-square)](https://www.npmjs.com/package/sanmeigaku)
+[![CI](https://img.shields.io/github/actions/workflow/status/chonai-flora/sanmeigaku/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/chonai-flora/sanmeigaku/actions/workflows/ci.yml)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+
+[GitHub Repository](https://github.com/chonai-flora/sanmeigaku)
+
 日本の算命学に特化した、TypeScript 製の命式計算パッケージです。Node.js で動作し、ランタイム依存はありません。
 
 > [!IMPORTANT]
@@ -7,7 +14,7 @@
 
 ## インストール
 
-公開後は次のコマンドでインストールできます。
+次のコマンドでインストールできます。
 
 ```sh
 npm install sanmeigaku@experimental
@@ -24,6 +31,11 @@ yarn add sanmeigaku@experimental
 ```sh
 bun add sanmeigaku@experimental
 ```
+
+## 動作環境
+
+- Node.js: `>=22.23.4 <23`、`>=24.22.1 <25`、または`>=26.12.1`
+- TypeScript: 5.9.3で検証。他のバージョンとの互換性は保証しません
 
 ## 使用例
 
@@ -50,7 +62,8 @@ console.log(result.analysis);
 - `calculateMonthBranch(birthDate)`: 月支
 - `calculateDayPillar(birthDate)`: 日柱
 - `calculateFiveElementBalance(pillars)`: 五行バランス
-- `calculateMajorStars(pillars)`, `getMajorStar(dayStem, targetStem)`, `getMainHiddenStem(branch)`: 十大主星
+- `calculateMajorStars(pillars)`, `getMajorStar(dayStem, targetStem)`: 十大主星
+- `getMainHiddenStem(branch)`: 地支の本元(蔵干)を取得
 - `calculateTwelveLifeStages(pillars)`, `getTwelveLifeStage(dayStem, branch)`: 十二大従星
 - `MIN_SUPPORTED_DATE`, `MAX_SUPPORTED_DATE`: 対応範囲
 
