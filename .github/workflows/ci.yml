@@ -27,11 +27,13 @@ jobs:
           package_dir="$RUNNER_TEMP/package"
           consumer_dir="$RUNNER_TEMP/consumer"
           mkdir -p "$package_dir" "$consumer_dir"
-          package_name="$(npm pack --pack-destination "$package_dir")"
+          npm pack --pack-destination "$package_dir"
+          package_path="$(find "$package_dir" -maxdepth 1 -type f -name '*.tgz' -print -quit)"
+          test -n "$package_path"
           cd "$consumer_dir"
           npm init -y
           npm pkg set type=module
-          npm install "$package_dir/$package_name"
+          npm install "$package_path"
           printf '%s\n' "import { calculateMeishiki } from 'sanmeigaku';" "const result = calculateMeishiki({ birthDate: '2000-01-01' });" "if (!result.pillars.day.label) throw new Error('calculation failed');" > index.mjs
           node index.mjs
           cp index.mjs index.ts
