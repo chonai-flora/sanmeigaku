@@ -1,6 +1,6 @@
 {
   "name": "sanmeigaku",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "日本の算命学に特化した命式計算ライブラリ",
   "homepage": "https://github.com/chonai-flora/sanmeigaku#readme",
   "bugs": {
