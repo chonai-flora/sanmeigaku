@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 
 import {
   buildGeneratedContent,
+  calculateSekkiBoundaries,
   loadSource,
   OUTPUT_PATH,
   SOURCE_PATH,
@@ -10,6 +11,10 @@ import {
 import naoGolden from './nao-sekki-2004-plus.json';
 
 describe('sekki dataset', () => {
+  it('reproduces the committed source with astronomia', () => {
+    expect(loadSource()).toEqual(calculateSekkiBoundaries());
+  }, 15_000);
+
   it('keeps the source and generated module in sync', () => {
     expect(readFileSync(OUTPUT_PATH, 'utf8')).toBe(buildGeneratedContent(loadSource(SOURCE_PATH)));
   });

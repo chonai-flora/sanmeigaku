@@ -1,18 +1,27 @@
 {
   "name": "sanmeigaku",
-  "version": "0.1.1",
+  "version": "0.0.0-development",
   "description": "日本の算命学に特化した命式計算ライブラリ",
+  "keywords": [
+    "npm-package",
+    "sanmeigaku",
+    "typescript",
+    "命式",
+    "算命学"
+  ],
   "homepage": "https://github.com/chonai-flora/sanmeigaku#readme",
   "bugs": {
     "url": "https://github.com/chonai-flora/sanmeigaku/issues"
   },
   "license": "MIT",
+  "author": "chonai-flora",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chonai-flora/sanmeigaku.git"
   },
   "files": [
-    "dist"
+    "dist",
+    "src/**/*.ts"
   ],
   "type": "module",
   "sideEffects": false,
@@ -25,7 +34,7 @@
   },
   "publishConfig": {
     "access": "public",
-    "tag": "experimental"
+    "tag": "latest"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -38,6 +47,7 @@
   },
   "devDependencies": {
     "@types/node": "26.6.6",
+    "astronomia": "4.2.0",
     "oxfmt": "0.75.0",
     "oxlint": "1.80.0",
     "oxlint-tsgolint": "7.0.2001",

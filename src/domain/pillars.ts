@@ -61,8 +61,7 @@ export const calculateDayPillar = (birthDate: string) => {
 };
 
 const yearBoundaries = (year: number) =>
-  (SEKKI_BOUNDARIES_JST[String(year) as keyof typeof SEKKI_BOUNDARIES_JST] ??
-    []) as readonly SekkiBoundary[];
+  SEKKI_BOUNDARIES_JST[year] ?? ([] as readonly SekkiBoundary[]);
 
 export const calculateYearPillar = (birthDate: string) => {
   const { year } = validateSupportedBirthDate(birthDate);

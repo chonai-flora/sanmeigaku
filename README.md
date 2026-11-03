@@ -1,35 +1,35 @@
 # sanmeigaku
 
-[![npm experimental](https://img.shields.io/npm/v/sanmeigaku/experimental?style=flat-square&logo=npm)](https://www.npmjs.com/package/sanmeigaku)
+[![npm version](https://img.shields.io/npm/v/sanmeigaku?style=flat-square&logo=npm)](https://www.npmjs.com/package/sanmeigaku)
 [![license](https://img.shields.io/npm/l/sanmeigaku?style=flat-square)](https://www.npmjs.com/package/sanmeigaku)
 [![CI](https://img.shields.io/github/actions/workflow/status/chonai-flora/sanmeigaku/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/chonai-flora/sanmeigaku/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 [GitHub Repository](https://github.com/chonai-flora/sanmeigaku)
 
-日本の算命学に特化した、TypeScript 製の命式計算パッケージです。Node.js で動作し、ランタイム依存はありません。
+日本の算命学に特化した TypeScript 製の命式計算パッケージです。Node.js で動作し、ランタイム依存はありません。
 
 > [!IMPORTANT]
-> 現在は experimental 版です。0.x の間は、検証結果に基づいて計算仕様や結果が変更される可能性があります。
+> 0.x の間は、検証結果に基づいて計算仕様や結果が変更される可能性があります。
 
 ## インストール
 
 次のコマンドでインストールできます。
 
 ```sh
-npm install sanmeigaku@experimental
+npm install sanmeigaku
 ```
 
 ```sh
-pnpm add sanmeigaku@experimental
+pnpm add sanmeigaku
 ```
 
 ```sh
-yarn add sanmeigaku@experimental
+yarn add sanmeigaku
 ```
 
 ```sh
-bun add sanmeigaku@experimental
+bun add sanmeigaku
 ```
 
 ## 動作環境
@@ -67,7 +67,7 @@ console.log(result.analysis);
 - `calculateTwelveLifeStages(pillars)`, `getTwelveLifeStage(dayStem, branch)`: 十二大従星
 - `MIN_SUPPORTED_DATE`, `MAX_SUPPORTED_DATE`: 対応範囲
 
-すべての公開型はパッケージのルートからエクスポートされます。節入りデータや蔵干表などの内部データは公開 API に含めません。不正な日付は `SanmeigakuInputError`、命式計算の対応範囲外は `SanmeigakuRangeError` を送出します。日柱単独の計算は節入りデータを使わないため、対応範囲外でも計算できます。
+公開している型はすべてパッケージのルートからエクスポートされます。節入りデータや蔵干表などの内部データは公開 API に含めません。不正な日付は `SanmeigakuInputError`、命式計算の対応範囲外は `SanmeigakuRangeError` を送出します。日柱単独の計算は節入りデータを使わないため、対応範囲外でも計算できます。
 
 ## 対応範囲と制約
 
@@ -79,21 +79,22 @@ console.log(result.analysis);
 - 五行バランス: 各柱の干・支を各1点、各蔵干を0.5点として集計
 - 人体星図の地支由来の十大主星: 各地支の本元を使用
 - 出生時刻は未対応。境界日の時刻前後を区別できません
-- 1900年1月の小寒が未検証のため、命式計算の対応開始日は最初の収録済み立春後である1900-02-05です
+- 1900年1月の小寒が未検証のため、命式計算の対応開始日は最初に収録した立春より後の1900-02-05です
 - 計算結果は採用した規則に基づくもので、算命学としての正確性を保証しません
 - ブラウザ向け bundler での利用は想定していますが、現時点では CI で検証していません
 
 ## 検証状況
 
-- 暦計算: 2004〜2026年の国立天文台由来の fixture 276件と照合し、時刻の差が60秒未満であることを自動テスト
+- 暦計算: 2004〜2026年の国立天文台由来の fixture 276件と照合し、最大差31秒であることを自動テスト
+- 暦データ生成: 1900〜2100年の全2412件を `astronomia` から再計算し、収録 JSON と完全一致することを自動テスト
 - 三柱: 固定 fixture による回帰テストと、各月の節入り日の前日・当日・翌日の境界テスト
 - 十大主星: 日干と対象の干の全100組を固定対応表と照合
 - 十二大従星: 日干と地支の全120組を固定対応表と照合
 - 人体星図: 固定 fixture で十大主星と十二大従星の配置を検証
 
-算命学固有のテストは実装の回帰を検出するためのものです。外部資料による独立検証が完了したことを意味しません。暦データも、1900〜2003年と2027〜2100年、および秒値の天文学的正確性は未検証です。
+算命学固有のテストは実装の回帰を検出するためのものです。外部資料による独立検証が完了したことを意味しません。暦データも、1900〜2003年と2027〜2100年は独立した時刻表との照合が未完了です。
 
-CI では、生成した tarball を別の npm プロジェクトへインストールし、Node.js からの import、命式計算、TypeScript の型解決を検証します。
+CI では生成した tarball を別の npm プロジェクトへインストールし、Node.js からの import、命式計算、TypeScript の型解決を検証します。
 
 ## 開発
 
@@ -104,7 +105,9 @@ bun run check
 npm pack --dry-run
 ```
 
-節入りの元データは `src/calendar/sekki-boundaries.source.json` です。生成スクリプトはこのファイルから TypeScript モジュールを再生成し、テストでは両者が一致することを検証します。命式の回帰 fixture は `tests/fixtures/pillars.ts`、外部資料との照合に使う fixture は `tests/nao-sekki-2004-plus.json` に分けて配置しています。
+節入りデータは `astronomia` 4.2.0(MIT) の Meeus/VSOP87 実装を使い、太陽の視黄経が各節の黄経を通過する時刻から生成します。JDE から UTC への変換後、固定 JST(+09:00) へ変換し、最も近い秒へ丸めます。生成スクリプトは1900〜2100年の `src/calendar/sekki-boundaries.source.json` とTypeScriptモジュールを同時に再生成し、テストでは再計算結果との完全一致を検証します。
+
+命式の回帰 fixture は `tests/fixtures/pillars.ts`、国立天文台の暦要項との照合に使う fixture は `tests/nao-sekki-2004-plus.json` に分けて配置しています。
 
 ## 設計方針
 
@@ -115,14 +118,15 @@ npm pack --dry-run
 
 ## 参考資料
 
-算命学の体系と実装結果の確認に、次の公開資料を参照しています。各サイトの文章、画像、教材、プログラムは本パッケージに収録していません。また、本パッケージは朱学院および国立天文台の公式・提携・監修製品ではありません。
+算命学の体系と実装結果を確認する際に、次の公開資料を参照しています。各サイトの文章、画像、教材、プログラムは本パッケージに収録していません。また、本パッケージは朱学院および国立天文台の公式・提携・監修製品ではありません。
 
 - [朱学院 無料で算命学入門](https://www.shugakuin.co.jp/fate_calculation)
 - [朱学院 十二支性情](https://www.shugakuin.co.jp/basics/jyunishi-seijou)
 - [朱学院 十干性情](https://www.shugakuin.co.jp/basics/jyukkan-seijou)
 - [国立天文台 暦計算室](https://eco.mtk.nao.ac.jp/koyomi/)
+- [astronomia](https://github.com/commenthol/astronomia)(MIT License)
 
-暦要項との照合に使う fixture には国立天文台の公開情報を利用しています。クレジット: 国立天文台。
+節入りデータ自体は既存の時刻表を転記せず、`astronomia` から再現可能な形で計算しています。暦要項との照合に使う fixture には国立天文台の公開情報を利用しています。クレジット: 国立天文台。
 
 ## ライセンス
 
