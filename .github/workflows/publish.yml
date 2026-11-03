@@ -41,8 +41,3 @@ jobs:
       - run: bun run check
       - run: npm pack --dry-run --ignore-scripts
       - run: npm publish --tag latest --access public --ignore-scripts
-      - name: Remove deprecated experimental tag
-        run: |
-          if npm dist-tag ls sanmeigaku | grep -q '^experimental:'; then
-            npm dist-tag rm sanmeigaku experimental
-          fi
