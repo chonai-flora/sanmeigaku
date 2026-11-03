@@ -11,6 +11,8 @@
     "outDir": "dist",
     "rootDir": "src",
     "types": ["node"],
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true
   },

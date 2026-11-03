@@ -5,7 +5,15 @@ export const MAX_SUPPORTED_DATE = '2100-12-31';
 
 const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
 
-export const validateBirthDate = (birthDate: string) => {
+type ParsedBirthDate = {
+  birthDate: string;
+  year: number;
+  month: number;
+  day: number;
+  utcMilliseconds: number;
+};
+
+export const validateBirthDate = (birthDate: string): ParsedBirthDate => {
   const match = DATE_PATTERN.exec(birthDate);
   if (!match) {
     throw new SanmeigakuInputError('birthDate must use the YYYY-MM-DD format.');
@@ -26,7 +34,7 @@ export const validateBirthDate = (birthDate: string) => {
   return { birthDate, year, month, day, utcMilliseconds: normalized.getTime() };
 };
 
-export const validateSupportedBirthDate = (birthDate: string) => {
+export const validateSupportedBirthDate = (birthDate: string): ParsedBirthDate => {
   const parsed = validateBirthDate(birthDate);
   if (birthDate < MIN_SUPPORTED_DATE || birthDate > MAX_SUPPORTED_DATE) {
     throw new SanmeigakuRangeError(

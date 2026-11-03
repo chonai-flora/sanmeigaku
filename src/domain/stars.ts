@@ -4,7 +4,7 @@ import {
   type HeavenlyStem,
   type MajorStarKey,
   type MajorStars,
-  type Pillar,
+  type Pillars,
   type TwelveLifeStageKey,
   type TwelveLifeStages,
 } from '../types.js';
@@ -69,7 +69,7 @@ const LIFE_STAGE_MATRIX = [
   [8, 2, 11, 11, 2, 11, 2, 8, 5, 5],
 ] as const;
 
-export const getMajorStar = (dayStem: HeavenlyStem, targetStem: HeavenlyStem) => {
+export const getMajorStar = (dayStem: HeavenlyStem, targetStem: HeavenlyStem): MajorStarKey => {
   const day = STEM_INFO[dayStem];
   const target = STEM_INFO[targetStem];
   const relation =
@@ -86,7 +86,10 @@ export const getMajorStar = (dayStem: HeavenlyStem, targetStem: HeavenlyStem) =>
   return RELATION_TO_STAR[relation][polarity];
 };
 
-export const getTwelveLifeStage = (dayStem: HeavenlyStem, branch: EarthlyBranch) => {
+export const getTwelveLifeStage = (
+  dayStem: HeavenlyStem,
+  branch: EarthlyBranch,
+): TwelveLifeStageKey => {
   const stemIndex = DAY_STEM_ORDER.indexOf(dayStem);
   const branchIndex = BRANCH_ORDER.indexOf(branch);
   const stageNumber = LIFE_STAGE_MATRIX[branchIndex]![stemIndex]!;
@@ -96,11 +99,7 @@ export const getTwelveLifeStage = (dayStem: HeavenlyStem, branch: EarthlyBranch)
 export const getMainHiddenStem = (branch: EarthlyBranch): HeavenlyStem =>
   HIDDEN_STEMS[branch][0].stem;
 
-export const calculateMajorStars = (pillars: {
-  year: Pillar;
-  month: Pillar;
-  day: Pillar;
-}): MajorStars => {
+export const calculateMajorStars = (pillars: Pillars): MajorStars => {
   const dayStem = pillars.day.heavenlyStem;
   return {
     head: getMajorStar(dayStem, pillars.year.heavenlyStem),
@@ -111,11 +110,7 @@ export const calculateMajorStars = (pillars: {
   };
 };
 
-export const calculateTwelveLifeStages = (pillars: {
-  year: Pillar;
-  month: Pillar;
-  day: Pillar;
-}): TwelveLifeStages => ({
+export const calculateTwelveLifeStages = (pillars: Pillars): TwelveLifeStages => ({
   year: getTwelveLifeStage(pillars.day.heavenlyStem, pillars.year.earthlyBranch),
   month: getTwelveLifeStage(pillars.day.heavenlyStem, pillars.month.earthlyBranch),
   day: getTwelveLifeStage(pillars.day.heavenlyStem, pillars.day.earthlyBranch),

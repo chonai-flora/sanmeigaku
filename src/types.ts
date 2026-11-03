@@ -29,6 +29,12 @@ export type Pillar = {
   label: string;
 };
 
+export type Pillars = {
+  year: Pillar;
+  month: Pillar;
+  day: Pillar;
+};
+
 export type CalculateMeishikiInput = {
   /** ISO 8601 calendar date (YYYY-MM-DD). It is evaluated at 00:00 in JST. */
   birthDate: string;
@@ -89,11 +95,7 @@ export type HumanStarChart = {
 
 export type MeishikiResult = {
   birthDate: string;
-  pillars: {
-    year: Pillar;
-    month: Pillar;
-    day: Pillar;
-  };
+  pillars: Pillars;
   dayMaster: {
     heavenlyStem: HeavenlyStem;
     earthlyBranch: EarthlyBranch;

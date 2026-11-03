@@ -1,6 +1,6 @@
 import { SEKKI_BOUNDARIES_JST, type SekkiBoundary } from '../calendar/sekki-boundaries.js';
 import { SIXTY_KANSHI } from '../data/constants.js';
-import { HEAVENLY_STEMS, type EarthlyBranch, type HeavenlyStem } from '../types.js';
+import { HEAVENLY_STEMS, type EarthlyBranch, type HeavenlyStem, type Pillar } from '../types.js';
 import { validateBirthDate, validateSupportedBirthDate } from './date.js';
 
 const DAY_MILLISECONDS = 86_400_000;
@@ -51,19 +51,18 @@ const MONTH_BRANCH_OFFSET = {
   丑: 11,
 } as const satisfies Record<EarthlyBranch, number>;
 
-const cycleAt = (index: number) =>
+const cycleAt = (index: number): Pillar =>
   SIXTY_KANSHI[((index % SIXTY_KANSHI.length) + SIXTY_KANSHI.length) % SIXTY_KANSHI.length]!;
 
-export const calculateDayPillar = (birthDate: string) => {
+export const calculateDayPillar = (birthDate: string): Pillar => {
   const { utcMilliseconds } = validateBirthDate(birthDate);
   const differenceInDays = Math.floor((utcMilliseconds - REFERENCE_DATE_UTC_MS) / DAY_MILLISECONDS);
   return cycleAt(REFERENCE_DAY_KANSHI_INDEX + differenceInDays);
 };
 
-const yearBoundaries = (year: number) =>
-  SEKKI_BOUNDARIES_JST[year] ?? ([] as readonly SekkiBoundary[]);
+const yearBoundaries = (year: number): readonly SekkiBoundary[] => SEKKI_BOUNDARIES_JST[year] ?? [];
 
-export const calculateYearPillar = (birthDate: string) => {
+export const calculateYearPillar = (birthDate: string): Pillar => {
   const { year } = validateSupportedBirthDate(birthDate);
   const risshun = yearBoundaries(year).find((boundary) => boundary.name === 'risshun');
   if (!risshun) {
@@ -74,7 +73,7 @@ export const calculateYearPillar = (birthDate: string) => {
   return cycleAt(effectiveYear - REFERENCE_YEAR);
 };
 
-export const calculateMonthBranch = (birthDate: string) => {
+export const calculateMonthBranch = (birthDate: string): EarthlyBranch => {
   const { year } = validateSupportedBirthDate(birthDate);
   const birthAtJst = new Date(`${birthDate}T00:00:00+09:00`);
   const boundaries = [...yearBoundaries(year - 1), ...yearBoundaries(year)].sort(
@@ -92,7 +91,7 @@ export const calculateMonthBranch = (birthDate: string) => {
 export const calculateMonthPillar = (
   birthDate: string,
   yearStem = calculateYearPillar(birthDate).heavenlyStem,
-) => {
+): Pillar => {
   validateSupportedBirthDate(birthDate);
   const earthlyBranch = calculateMonthBranch(birthDate);
   const startIndex = HEAVENLY_STEMS.indexOf(START_STEM_BY_YEAR_STEM[yearStem]);

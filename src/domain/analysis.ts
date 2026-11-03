@@ -5,7 +5,7 @@ import {
   type FiveElementBalance,
   type HumanStarChart,
   type MajorStars,
-  type Pillar,
+  type Pillars,
   type SanmeigakuAnalysis,
   type TwelveLifeStages,
 } from '../types.js';
@@ -13,14 +13,14 @@ import { getMainHiddenStem, getMajorStar } from './stars.js';
 
 const HIDDEN_STEM_SCORE = 0.5;
 
-export const calculateFiveElementBalance = (pillars: {
-  year: Pillar;
-  month: Pillar;
-  day: Pillar;
-}) => {
-  const balance = Object.fromEntries(
-    FIVE_ELEMENTS.map((element) => [element, 0]),
-  ) as FiveElementBalance;
+export const calculateFiveElementBalance = (pillars: Pillars): FiveElementBalance => {
+  const balance: FiveElementBalance = {
+    wood: 0,
+    fire: 0,
+    earth: 0,
+    metal: 0,
+    water: 0,
+  };
   for (const pillar of [pillars.year, pillars.month, pillars.day]) {
     balance[STEM_INFO[pillar.heavenlyStem].fiveElement] += 1;
     balance[BRANCH_ELEMENT[pillar.earthlyBranch]] += 1;
@@ -32,19 +32,9 @@ export const calculateFiveElementBalance = (pillars: {
 };
 
 export const buildHumanStarChart = (
-  majorStars: {
-    head: HumanStarChart['head'];
-    rightHand: HumanStarChart['rightHand'];
-    chest: HumanStarChart['chest'];
-    leftHand: HumanStarChart['leftHand'];
-    belly: HumanStarChart['belly'];
-  },
-  stages: {
-    year: HumanStarChart['leftShoulder'];
-    month: HumanStarChart['leftFoot'];
-    day: HumanStarChart['rightFoot'];
-  },
-) => ({
+  majorStars: MajorStars,
+  stages: TwelveLifeStages,
+): HumanStarChart => ({
   head: majorStars.head,
   leftShoulder: stages.year,
   rightHand: majorStars.rightHand,
@@ -56,7 +46,7 @@ export const buildHumanStarChart = (
 });
 
 export const buildSanmeigakuAnalysis = (
-  pillars: { year: Pillar; month: Pillar; day: Pillar },
+  pillars: Pillars,
   balance: FiveElementBalance,
   majorStars: MajorStars,
   stages: TwelveLifeStages,
