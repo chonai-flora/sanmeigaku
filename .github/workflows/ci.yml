@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26.13.0
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+      - name: Verify package tarball
+        run: |
+          package_dir="$RUNNER_TEMP/package"
+          consumer_dir="$RUNNER_TEMP/consumer"
+          mkdir -p "$package_dir" "$consumer_dir"
+          package_name="$(npm pack --pack-destination "$package_dir")"
+          cd "$consumer_dir"
+          npm init -y
+          npm pkg set type=module
+          npm install "$package_dir/$package_name"
+          printf '%s\n' "import { calculateMeishiki } from 'sanmeigaku';" "const result = calculateMeishiki({ birthDate: '2000-01-01' });" "if (!result.pillars.day.label) throw new Error('calculation failed');" > index.mjs
+          node index.mjs
+          cp index.mjs index.ts
+          "$GITHUB_WORKSPACE/node_modules/.bin/tsc" --noEmit --strict --module NodeNext --moduleResolution NodeNext --target ES2022 index.ts
