@@ -10,19 +10,19 @@
 公開後は次のコマンドでインストールできます。
 
 ```sh
-npm install sanmeigaku
+npm install sanmeigaku@experimental
 ```
 
 ```sh
-pnpm add sanmeigaku
+pnpm add sanmeigaku@experimental
 ```
 
 ```sh
-yarn add sanmeigaku
+yarn add sanmeigaku@experimental
 ```
 
 ```sh
-bun add sanmeigaku
+bun add sanmeigaku@experimental
 ```
 
 ## 使用例
