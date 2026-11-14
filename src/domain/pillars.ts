@@ -62,6 +62,21 @@ export const calculateDayPillar = (birthDate: string): Pillar => {
 
 const yearBoundaries = (year: number): readonly SekkiBoundary[] => SEKKI_BOUNDARIES_JST[year] ?? [];
 
+const findCurrentSekkiBoundary = (birthDate: string): SekkiBoundary => {
+  const { year } = validateSupportedBirthDate(birthDate);
+  const birthAtJst = new Date(`${birthDate}T00:00:00+09:00`);
+  const boundaries = [...yearBoundaries(year - 1), ...yearBoundaries(year)].sort(
+    (left, right) => Date.parse(left.startsAtJst) - Date.parse(right.startsAtJst),
+  );
+  for (let index = boundaries.length - 1; index >= 0; index -= 1) {
+    const boundary = boundaries[index]!;
+    if (birthAtJst >= new Date(boundary.startsAtJst)) {
+      return boundary;
+    }
+  }
+  throw new RangeError(`Sekki boundary is unavailable for ${birthDate}.`);
+};
+
 export const calculateYearPillar = (birthDate: string): Pillar => {
   const { year } = validateSupportedBirthDate(birthDate);
   const risshun = yearBoundaries(year).find((boundary) => boundary.name === 'risshun');
@@ -74,18 +89,15 @@ export const calculateYearPillar = (birthDate: string): Pillar => {
 };
 
 export const calculateMonthBranch = (birthDate: string): EarthlyBranch => {
-  const { year } = validateSupportedBirthDate(birthDate);
+  return MONTH_BRANCH_BY_SEKKI[findCurrentSekkiBoundary(birthDate).name];
+};
+
+export const calculateSekkiDay = (birthDate: string): number => {
   const birthAtJst = new Date(`${birthDate}T00:00:00+09:00`);
-  const boundaries = [...yearBoundaries(year - 1), ...yearBoundaries(year)].sort(
-    (left, right) => Date.parse(left.startsAtJst) - Date.parse(right.startsAtJst),
+  const boundary = findCurrentSekkiBoundary(birthDate);
+  return (
+    Math.floor((birthAtJst.getTime() - Date.parse(boundary.startsAtJst)) / DAY_MILLISECONDS) + 1
   );
-  let branch: EarthlyBranch = '子';
-  for (const boundary of boundaries) {
-    if (birthAtJst >= new Date(boundary.startsAtJst)) {
-      branch = MONTH_BRANCH_BY_SEKKI[boundary.name];
-    }
-  }
-  return branch;
 };
 
 export const calculateMonthPillar = (

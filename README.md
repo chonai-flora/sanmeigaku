@@ -62,7 +62,7 @@ console.log(result.analysis);
 - `calculateMonthBranch(birthDate)`: 月支
 - `calculateDayPillar(birthDate)`: 日柱
 - `calculateFiveElementBalance(pillars)`: 五行バランス
-- `calculateMajorStars(pillars)`, `getMajorStar(dayStem, targetStem)`: 十大主星
+- `calculateMajorStars(pillars, birthDate)`, `getMajorStar(dayStem, targetStem)`: 十大主星
 - `getMainHiddenStem(branch)`: 地支の本元(蔵干)を取得
 - `calculateTwelveLifeStages(pillars)`, `getTwelveLifeStage(dayStem, branch)`: 十二大従星
 - `MIN_SUPPORTED_DATE`, `MAX_SUPPORTED_DATE`: 対応範囲
@@ -77,7 +77,8 @@ console.log(result.analysis);
 - 月柱: 12の節入り境界を使用
 - 日柱: 1900-01-01を甲戌とする基準を使用
 - 五行バランス: 各柱の干・支を各1点、各蔵干を0.5点として集計
-- 人体星図の地支由来の十大主星: 各地支の本元を使用
+- 人体星図の地支由来の十大主星: 月支を決めた節入り時刻から24時間を1日として数え、二十八元表の初元・中元・本元を使用。節入り後を1日目とする
+- 二十八元表の出典: [算命学アカデミーオンライン「蔵干の計算と節入り時刻について」](https://sanmeigaku-academy.online/2017/10/13/%E8%94%B5%E5%B9%B2%E3%81%AE%E8%A8%88%E7%AE%97%E3%81%A8%E7%AF%80%E5%85%A5%E3%82%8A%E6%99%82%E5%88%BB%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6/)
 - 出生時刻は未対応。境界日の時刻前後を区別できません
 - 1900年1月の小寒が未検証のため、命式計算の対応開始日は最初に収録した立春より後の1900-02-05です
 - 計算結果は採用した規則に基づくもので、算命学としての正確性を保証しません

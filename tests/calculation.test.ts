@@ -44,9 +44,9 @@ describe('analysis', () => {
     const result = calculateMeishiki({ birthDate: '2004-09-12' });
     expect(result.majorStars).toEqual({
       head: '貫索星',
-      rightHand: '調舒星',
+      rightHand: '司禄星',
       chest: '牽牛星',
-      leftHand: '車騎星',
+      leftHand: '禄存星',
       belly: '玉堂星',
     });
     expect(result.humanStarChart.leftShoulder).toBe('天馳星');

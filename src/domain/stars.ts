@@ -8,6 +8,7 @@ import {
   type TwelveLifeStageKey,
   type TwelveLifeStages,
 } from '../types.js';
+import { calculateSekkiDay } from './pillars.js';
 
 const ELEMENT_PRODUCES = {
   wood: 'fire',
@@ -69,6 +70,55 @@ const LIFE_STAGE_MATRIX = [
   [8, 2, 11, 11, 2, 11, 2, 8, 5, 5],
 ] as const;
 
+const HIDDEN_STEMS_BY_SEKKI_DAY = {
+  子: [{ through: Infinity, stem: '癸' }],
+  丑: [
+    { through: 9, stem: '癸' },
+    { through: 12, stem: '辛' },
+    { through: Infinity, stem: '己' },
+  ],
+  寅: [
+    { through: 7, stem: '戊' },
+    { through: 14, stem: '丙' },
+    { through: Infinity, stem: '甲' },
+  ],
+  卯: [{ through: Infinity, stem: '乙' }],
+  辰: [
+    { through: 9, stem: '乙' },
+    { through: 12, stem: '癸' },
+    { through: Infinity, stem: '戊' },
+  ],
+  巳: [
+    { through: 5, stem: '戊' },
+    { through: 14, stem: '庚' },
+    { through: Infinity, stem: '丙' },
+  ],
+  午: [
+    { through: 19, stem: '己' },
+    { through: Infinity, stem: '丁' },
+  ],
+  未: [
+    { through: 9, stem: '丁' },
+    { through: 12, stem: '乙' },
+    { through: Infinity, stem: '己' },
+  ],
+  申: [
+    { through: 10, stem: '戊' },
+    { through: 13, stem: '壬' },
+    { through: Infinity, stem: '庚' },
+  ],
+  酉: [{ through: Infinity, stem: '辛' }],
+  戌: [
+    { through: 9, stem: '辛' },
+    { through: 12, stem: '丁' },
+    { through: Infinity, stem: '戊' },
+  ],
+  亥: [
+    { through: 12, stem: '甲' },
+    { through: Infinity, stem: '壬' },
+  ],
+} as const satisfies Record<EarthlyBranch, readonly { through: number; stem: HeavenlyStem }[]>;
+
 export const getMajorStar = (dayStem: HeavenlyStem, targetStem: HeavenlyStem): MajorStarKey => {
   const day = STEM_INFO[dayStem];
   const target = STEM_INFO[targetStem];
@@ -99,14 +149,32 @@ export const getTwelveLifeStage = (
 export const getMainHiddenStem = (branch: EarthlyBranch): HeavenlyStem =>
   HIDDEN_STEMS[branch][0].stem;
 
-export const calculateMajorStars = (pillars: Pillars): MajorStars => {
-  const dayStem = pillars.day.heavenlyStem;
+export const getHiddenStemBySekkiDay = (branch: EarthlyBranch, sekkiDay: number): HeavenlyStem =>
+  HIDDEN_STEMS_BY_SEKKI_DAY[branch].find(({ through }) => sekkiDay <= through)!.stem;
+
+export const calculateMajorStarSources = (
+  pillars: Pillars,
+  birthDate: string,
+): Record<keyof MajorStars, HeavenlyStem> => {
+  const sekkiDay = calculateSekkiDay(birthDate);
   return {
-    head: getMajorStar(dayStem, pillars.year.heavenlyStem),
-    rightHand: getMajorStar(dayStem, getMainHiddenStem(pillars.day.earthlyBranch)),
-    chest: getMajorStar(dayStem, getMainHiddenStem(pillars.month.earthlyBranch)),
-    leftHand: getMajorStar(dayStem, getMainHiddenStem(pillars.year.earthlyBranch)),
-    belly: getMajorStar(dayStem, pillars.month.heavenlyStem),
+    head: pillars.year.heavenlyStem,
+    rightHand: getHiddenStemBySekkiDay(pillars.day.earthlyBranch, sekkiDay),
+    chest: getHiddenStemBySekkiDay(pillars.month.earthlyBranch, sekkiDay),
+    leftHand: getHiddenStemBySekkiDay(pillars.year.earthlyBranch, sekkiDay),
+    belly: pillars.month.heavenlyStem,
+  };
+};
+
+export const calculateMajorStars = (pillars: Pillars, birthDate: string): MajorStars => {
+  const dayStem = pillars.day.heavenlyStem;
+  const sources = calculateMajorStarSources(pillars, birthDate);
+  return {
+    head: getMajorStar(dayStem, sources.head),
+    rightHand: getMajorStar(dayStem, sources.rightHand),
+    chest: getMajorStar(dayStem, sources.chest),
+    leftHand: getMajorStar(dayStem, sources.leftHand),
+    belly: getMajorStar(dayStem, sources.belly),
   };
 };
 

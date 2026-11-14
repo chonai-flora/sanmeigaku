@@ -12,6 +12,7 @@ import {
 } from './domain/pillars.js';
 import {
   calculateMajorStars,
+  calculateMajorStarSources,
   calculateTwelveLifeStages,
   getMainHiddenStem,
   getMajorStar,
@@ -24,7 +25,8 @@ export const calculateMeishiki = (input: CalculateMeishikiInput): MeishikiResult
   const month = calculateMonthPillar(input.birthDate, year.heavenlyStem);
   const day = calculateDayPillar(input.birthDate);
   const pillars = { year, month, day };
-  const majorStars = calculateMajorStars(pillars);
+  const majorStarSources = calculateMajorStarSources(pillars, input.birthDate);
+  const majorStars = calculateMajorStars(pillars, input.birthDate);
   const twelveLifeStages = calculateTwelveLifeStages(pillars);
   const fiveElementBalance = calculateFiveElementBalance(pillars);
   return {
@@ -39,7 +41,13 @@ export const calculateMeishiki = (input: CalculateMeishikiInput): MeishikiResult
     majorStars,
     twelveLifeStages,
     humanStarChart: buildHumanStarChart(majorStars, twelveLifeStages),
-    analysis: buildSanmeigakuAnalysis(pillars, fiveElementBalance, majorStars, twelveLifeStages),
+    analysis: buildSanmeigakuAnalysis(
+      pillars,
+      fiveElementBalance,
+      majorStars,
+      majorStarSources,
+      twelveLifeStages,
+    ),
   };
 };
 

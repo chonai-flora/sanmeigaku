@@ -3,13 +3,14 @@ import { FIVE_ELEMENT_INFO, MAJOR_STAR_INFO, TWELVE_LIFE_STAGE_INFO } from '../d
 import {
   FIVE_ELEMENTS,
   type FiveElementBalance,
+  type HeavenlyStem,
   type HumanStarChart,
   type MajorStars,
   type Pillars,
   type SanmeigakuAnalysis,
   type TwelveLifeStages,
 } from '../types.js';
-import { getMainHiddenStem, getMajorStar } from './stars.js';
+import { getMajorStar } from './stars.js';
 
 const HIDDEN_STEM_SCORE = 0.5;
 
@@ -49,6 +50,7 @@ export const buildSanmeigakuAnalysis = (
   pillars: Pillars,
   balance: FiveElementBalance,
   majorStars: MajorStars,
+  majorSources: Record<keyof MajorStars, HeavenlyStem>,
   stages: TwelveLifeStages,
 ): SanmeigakuAnalysis => {
   const sorted = FIVE_ELEMENTS.map((element) => ({
@@ -67,13 +69,6 @@ export const buildSanmeigakuAnalysis = (
   const strongestLabels = strongest.map((element) => FIVE_ELEMENT_INFO[element].label).join('と');
   const weakestLabels = weakest.map((element) => FIVE_ELEMENT_INFO[element].label).join('と');
 
-  const majorSources = {
-    head: pillars.year.heavenlyStem,
-    rightHand: getMainHiddenStem(pillars.day.earthlyBranch),
-    chest: getMainHiddenStem(pillars.month.earthlyBranch),
-    leftHand: getMainHiddenStem(pillars.year.earthlyBranch),
-    belly: pillars.month.heavenlyStem,
-  } as const;
   const majorTitles = {
     head: '頭',
     rightHand: '右手',
